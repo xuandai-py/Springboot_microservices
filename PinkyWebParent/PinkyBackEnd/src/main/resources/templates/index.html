@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" http-equiv="Content-Type" content="text/html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0 ">
+    <title>Welcome to Pinky shop Admin</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{webjars/jquery/3.4.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div>
+            <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+                <a th:href="@{/}" class="navbar-brand">
+                    <img style="width: 5rem;" th:src="@{/images/pinky.jpg}" alt="Pinky Logo"/>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="topNavbar">
+                    <ul class="navbar-nav"  `>
+                        <li class="nav-item">
+                            <a th:href="@{/users}" class="nav-link">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/categories}" class="nav-link">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/brands}" class="nav-link">Brands</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/products}" class="nav-link">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/customers}" class="nav-link">Customers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/shipping}" class="nav-link">Shipping</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/orders}" class="nav-link">Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/report}" class="nav-link">Sales Report</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/articles}" class="nav-link">Articles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/menus}" class="nav-link">Menus</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/settings}" class="nav-link">Settings</a>
+                        </li>
+
+
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div>
+        <p>&copy;Pinky Souvenir Planet - <span id="date_dev"></span> - All right reserved</p>
+    </div>
+</body>
+<script>
+    document.getElementById('date_dev').innerHTML = new Date().getFullYear()+"-"+ (new Date().getFullYear() + 1);
+</script>
+</html>
