@@ -64,33 +64,59 @@
     </div>
     <div>
         <h1>Manage Users</h1>
-        <a th:href="@{/users/new}">Create new user</a>
+        <a th:href="@{/users/new}" class="fas fa-user-plus fa-2x icon-dark mr-2"></a>
+        &nbsp;|&nbsp;
+        <a th:href="@{/users/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2" ></a>
+        &nbsp;|&nbsp;
+        <a th:href="@{/users/export/excel}" class="fas fa-file-excel fa-2x icon-dark mr-2"></a>
+        &nbsp;|&nbsp;
+        <a th:href="@{/users/export/pdf}" class="fas fa-file-pdf fa-2x icon-dark mr-2"></a>
     </div>
 
     <div th:if="${respond_message != null}" class="alert alert-success text-center">
         [[${respond_message}]]
     </div>
+
     <div>
+        <form th:action="@{/users/page/1}" class="form-inline m-3">
+            <input type="hidden" name="sortField" th:value="${sortField}" />
+            <input type="hidden" name="sortDir" th:value="${sortDir }"/>
+
+            Filter:&nbsp;&nbsp;
+            <input type="search" th:value="${keyword}" class="form-control" name="keyword" required />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-secondary" onclick="clearFilter()" >
+                <i class="fas fa-eraser"></i>
+            </button>
+        </form>
+    </div>
+    <div class="full-details">
         <table class="table table-bordered table-striped table-hover table-responsive-xl">
             <thead class="thead-dark">
                 <tr>
-                    <th>User ID</th>
+
+                    <th class="hideable-column">
+                        <th th:replace="fragments :: column_link('id', 'UserID', 'tag')"/>
+                    </th>
+
                     <th>Photos</th>
-                    <th>Email</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
+                    <th th:replace="fragments :: column_link('email','Email', 'tag')"></th>
+                    <th th:replace="fragments :: column_link('firstName','First Name', 'none')"></th >
+                    <th th:replace="fragments :: column_link('lastName','Last Name', 'none')"></th>
                     <th>Roles</th>
-                    <th>Enabled</th>
+                    <th th:replace="fragments :: column_link('enabled','Enabled', 'none')"></th>
                     <th>Commands</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="user: ${listUsers}">
-                    <td>[[${user.id}]]</td>
+                    <td class="hideable-column">[[${user.id}]]</td>
                     <td>
                         <span th:if="${user.photos == null}"class="fa fa-portrait fa-2x icon-dark"></span>
                         <image th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}"/></td>
-                    <td>[[${user.email}]]</td>
+                    <td class="hideable-column">[[${user.email}]]</td>
                     <td>[[${user.firstName}]]</td>
                     <td>[[${user.lastName}]]</td>
                     <td>[[${user.roles}]]</td>
@@ -107,6 +133,60 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="less-details">
+         <div th:each="user: ${listUsers}" class="row m-1">
+             <div class="col-4">
+                 <span class="fas fa-portrait fa-3x icon-silver" th:if="${user.photos == null}"></span>
+                 <img th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}" style="width: 100px"/>
+             </div>
+             <div class="col-8">
+                 <div>[[${user.fullName}]]</div>
+                 <div>[[${user.roles}]]</div>
+                 <div>
+                     <a th:if="${user.enabled == true}" th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user" class="fas fa-check-circle fa-1x icon-green" ></a>
+                     <a th:if="${user.enabled == false}" th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user" class="fas fa-check-circle fa-1x icon-dark"></a>
+                        &nbsp;
+                     <a th:href="@{'/users/edit/' + ${user.id}}" title="Edit this user" class="fas fa-marker fa-2x icon-green" ></a>
+                     &nbsp;
+                     <a th:href="@{'/users/delete/' + ${user.id}}" th:userId="${user.id}" title="Delete this user" class="fas fa-eraser fa-2x icon-silver link-delete"></a>
+                 </div>
+             </div>
+             <div>&nbsp;</div>
+
+         </div>
+    </div>
+
+
+    <div class="text-center m-1" th:if="${totalItems>0}">
+        <span>Showing user from: [[${startCount}]] to [[${endCount}]] of [[${totalItems}]] </span>
+    </div>
+    <div class="text-center m-1" th:unless="${totalItems>0}">
+        <span>No user found</span>
+    </div>
+    <div th:if="${totalPages > 1}">
+        <nav>
+            <ui class="pagination justify-content-center flex-wrap">
+                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"}>
+                    <a th:replace="fragments :: page_link(1, 'First')"></a>
+                </li>
+                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}"}>
+                    <a th:replace="fragments :: page_link(${currentPage -1}, 'Previous')"></a>
+                </li>
+
+                <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"}
+                    th:each="i:${#numbers.sequence(1, totalPages)}">
+                    <a th:replace="fragments :: page_link(${i}, ${i})"></a>
+                </li>
+                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}"}>
+                    <a th:replace="fragments :: page_link(${currentPage + 1}, 'Next')"></a>
+                </li>
+                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}"}>
+                    <a th:replace="fragments :: page_link(${totalPages}, 'Last')"></a>
+                </li>
+            </ui>
+        </nav>
     </div>
 
 
@@ -144,6 +224,10 @@
             $("#confirmModal").modal();
         });
     });
+
+    function clearFilter(){
+        window.location = "[[@{/users}]]";
+    }
 
     document.getElementById('date_dev').innerHTML = new Date().getFullYear()+"-"+ (new Date().getFullYear() + 1);
 

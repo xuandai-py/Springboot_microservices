@@ -7,7 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -73,5 +79,19 @@ public class UserRepositoryTests {
         User user = repository.getUserByEmail(email);
 
         assertThat(user).isNotNull();
+    }
+
+    @Test
+    public void testFilter(){
+        String keyword = "Bruce";
+        int pageNumber = 0;
+        int pageSize = 4;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<User> page = repository.findAll(keyword, pageable);
+
+        List<User> list = page.getContent();
+        list.forEach(user -> System.out.println(user));
+        assertThat(list.size()).isGreaterThan(0);
     }
 }
